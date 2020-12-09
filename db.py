@@ -11,13 +11,15 @@ db_connection = MySQLConnector.connect(
 
 # initiate a MySQLCursor
 query_cursor = db_connection.cursor()
-q = 'select * from my_mail where id = 2'
+
 
 # for query Executing
-def query_Executer(query):
-    query_cursor.execute(query)
-    queryData = query_cursor.fetchall()
+def query_Executer(query,val=None):
+    query_cursor.execute(query,val)
+    try:
+        queryData = query_cursor.fetchall()
+    except:
+        queryData = None
     db_connection.commit()
     return queryData
 
-query_Executer(q)
