@@ -1,21 +1,25 @@
 ## import Query Executer Function for execute SQL Queries
-from db import query_Executer
+
+from sql_functools import query_Executer,return_queryObj
+
+
 
 class QueryObject:
 
     # initialize a new QueryObject
-    def __init__(self,queryData,tableName):
+    def __init__(self,queryData):
         self.queryData = queryData
-        self.tableName = tableName
      
     # return first record from queryObject
     def first(self):
-        first_record = self.queryData[0]
+        FIRST = 0
+        first_record = self.queryData[FIRST]
         return first_record
 
     # return last record from queryObject
     def last(self):
-        last_record = self.queryData[-1]
+        LAST = -1
+        last_record = self.queryData[LAST]
         return last_record
     
     # return total numbers of record in queryObject
@@ -34,7 +38,7 @@ class QueryObject:
         return True
 
 
-
+## manage all sql query related tasks
 class QuerySet:
      
     # return only one record from table
@@ -43,8 +47,12 @@ class QuerySet:
         for key,value in kwarg.items():
             conditions = conditions + f'{key}={value}'
         SQLquery = f'SELECT * FROM {table_name} WHERE {conditions}'
-        sql_query_result = query_Executer(SQLquery)
-        query_object = QueryObject(sql_query_result,table_name)
+        sql_query_result,column_name = query_Executer(SQLquery)
+        if len(sql_query_result) > 1:
+            raise Exception('More than one record get() returned')
+        elif len(sql_query_result) == 0:
+            sql_query_result = None 
+        query_object = return_queryObj(sql_query_result,column_name)
         return query_object
     
     # return more than one record from table
@@ -58,15 +66,15 @@ class QuerySet:
             condition_len -= 1
         condition_val = tuple(condition_val)
         SQLquery = f'SELECT * FROM {table_name} WHERE {conditions}'
-        sql_query_result = query_Executer(SQLquery,val=condition_val)
-        query_object = QueryObject(sql_query_result,table_name)
+        sql_query_result,column_name = query_Executer(SQLquery)
+        query_object = return_queryObj(sql_query_result,column_name)
         return query_object
 
     # return all record from table
     def all(table_name,**kwarg):
         SQLquery = f'SELECT * FROM {table_name}'
-        sql_query_result = query_Executer(SQLquery)
-        query_object = QueryObject(sql_query_result,table_name)
+        sql_query_result,column_name = query_Executer(SQLquery)
+        query_object = return_queryObj(sql_query_result,column_name)
         return query_object        
     
 
@@ -92,8 +100,8 @@ class QuerySet:
         values = update_val + condition_val
 
         SQLquery = f'UPDATE {table_name} SET {Set_values} WHERE {conditions}'
-        sql_query_result = query_Executer(SQLquery,val=values)
-        query_object = QueryObject(sql_query_result,table_name)
+        sql_query_result,column_name = query_Executer(SQLquery)
+        query_object = return_queryObj(sql_query_result,column_name)
         return query_object
 
 
@@ -108,8 +116,8 @@ class QuerySet:
             condition_len -= 1
         values = tuple(values)
         SQLquery = f'DELETE FROM {table_name} WHERE {conditions}'
-        sql_query_result = query_Executer(SQLquery,val=values)
-        query_object = QueryObject(sql_query_result,table_name)
+        sql_query_result,column_name = query_Executer(SQLquery,val=values)
+        query_object = return_queryObj(sql_query_result,column_name)
         return query_object
         
     # insert new record into table
@@ -126,8 +134,8 @@ class QuerySet:
         values = tuple(values)
         SQLquery = f'INSERT INTO {table_name}({column_name})VALUES({format_specifier})'
         print(SQLquery)
-        sql_query_result = query_Executer(SQLquery,val=values)
-        query_object = QueryObject(sql_query_result,table_name)
+        sql_query_result,column_name = query_Executer(SQLquery,val=values)
+        query_object = return_queryObj(sql_query_result,column_name)
         return query_object
 
      
