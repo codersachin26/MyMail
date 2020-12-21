@@ -1,4 +1,6 @@
+
 from flask import Flask
+from db_connect import make_db_connection
 
 app = Flask(__name__)
 app.secret_key = 'flaskISAwesome'

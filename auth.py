@@ -2,7 +2,7 @@
 
 from flask import session
 from hashlib import sha256
-from sql_query import QuerySet
+from query_manager import QuerySet
 
 
 # start user session

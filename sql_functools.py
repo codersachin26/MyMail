@@ -1,6 +1,6 @@
 ## query helper functions
 
-from sql_query import QueryObject
+from query_object import QueryObject
 from db_connect import MySQL_cursor,db_connection
 
 # for query Executing
